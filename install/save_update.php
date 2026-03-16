@@ -20,7 +20,7 @@ if (!$panel_id || !$filename) {
     exit;
 }
 
-$url = "https://upload.couponcart.in/secure_download.php?panel_id=$panel_id&file=$filename";
+$url = "https://auth.freepanel.shop/secure_download.php?panel_id=$panel_id&file=$filename";
 
 // Detect customer's domain
 $domain = $_SERVER['HTTP_HOST'];

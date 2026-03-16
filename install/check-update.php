@@ -21,7 +21,7 @@ function get_remote_data($url, $domain) {
     return $output;
 }
 
-$latestVersionData = get_remote_data("https://upload.couponcart.in/latest_version.php", $domain);
+$latestVersionData = get_remote_data("https://auth.freepanel.shop/latest_version.php", $domain);
 $latestVersionJson = json_decode($latestVersionData, true);
 
 if (!$latestVersionJson || !isset($latestVersionJson['version'])) {

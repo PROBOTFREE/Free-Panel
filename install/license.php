@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "X-Domain: $domain"
         ];
 
-        $ch = curl_init('https://upload.couponcart.in/api/validate-license.php');
+        $ch = curl_init('https://auth.freepanel.shop/api/validate-license.php');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
