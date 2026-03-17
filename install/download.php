@@ -34,67 +34,132 @@ if (is_dir($updatesDir)) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Download Update</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap & SweetAlert2 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            background: linear-gradient(to right, #e3f2fd, #fff);
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .card {
-            border-radius: 16px;
-        }
-        .card-body {
-            padding: 2.5rem;
-        }
-        .changelog-box {
-            background-color: #f1f1f1;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
-            font-size: 0.95rem;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        .btn-primary {
-            font-weight: 500;
-        }
-    </style>
+<title>Download Update - FreePanel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+/* === GLOBAL === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === CARD === */
+.card {
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    border-radius: 24px;
+    backdrop-filter: blur(25px);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    color: white;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+/* === TITLE === */
+.card h2 {
+    margin-bottom: 10px;
+}
+
+.sub-text {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 25px;
+}
+
+/* === VERSION === */
+.version {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.version span {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* === CHANGELOG === */
+.changelog {
+    background: rgba(255,255,255,0.15);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: left;
+    font-size: 13px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+/* === BUTTON === */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border-radius: 12px;
+    border: none;
+    background: #fff;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+/* === ANIMATION === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>
 </head>
+
 <body>
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow-lg w-100" style="max-width: 600px;">
-        <div class="card-body text-center">
-            <h3 class="mb-4"><i class="bi bi-cloud-arrow-down-fill me-2"></i>Latest Panel Update</h3>
-            <p class="mb-1"><strong>Version:</strong> <span id="latest-version" class="text-primary">Checking...</span></p>
-            <div class="changelog-box mt-3">
-                <strong>Changelog:</strong>
-                <div id="changelog" class="mt-1 text-muted">Fetching...</div>
-            </div>
-            <button id="download-btn" class="btn btn-primary mt-4 px-4">
-                <i class="bi bi-download me-1"></i> One-Click Setup
-            </button>
-        </div>
-    </div>
-</div>
+<div class="card">
+    <h2>🚀 Panel Update</h2>
+    <p class="sub-text">Install the latest version of your panel</p>
 
+    <div class="version">
+        Version: <span id="latest-version">Checking...</span>
+    </div>
+
+    <div class="changelog">
+        <strong>Changelog:</strong>
+        <div id="changelog">Fetching...</div>
+    </div>
+
+    <button id="download-btn">One-Click Setup</button>
+</div>
 
 <script>
 const encodedPanelId = "<?php echo htmlspecialchars($panel_id); ?>";
 const token = "<?php echo htmlspecialchars($token); ?>";
-
-
-function disableCache(url) {
-    return url + (url.includes('?') ? '&' : '?') + '_=' + new Date().getTime();
-}
 
 async function checkLatestVersion() {
     try {
@@ -107,30 +172,30 @@ async function checkLatestVersion() {
             document.getElementById('download-btn').onclick = () => logAndDownload(data.filename);
         } else {
             document.getElementById('latest-version').textContent = 'Up to date';
+            document.getElementById('changelog').textContent = 'You are already on the latest version.';
         }
     } catch (error) {
-        console.error("Failed to fetch version info", error);
+        document.getElementById('latest-version').textContent = 'Error';
+        document.getElementById('changelog').textContent = 'Failed to fetch updates.';
     }
 }
 
 async function logAndDownload(filename) {
     if (!encodedPanelId || !filename) {
-        Swal.fire('Error', 'Missing download parameters.', 'error');
+        Swal.fire('Error', 'Missing parameters.', 'error');
         return;
     }
 
-        // Show sweetalert loader with "Installing update..."
     Swal.fire({
         title: 'Installing Update...',
+        text: 'Please wait while we set things up',
         allowOutsideClick: false,
         showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
+        backdrop: 'rgba(0,0,0,0.6)',
+        didOpen: () => Swal.showLoading()
     });
 
-
-   try {
+    try {
         const response = await fetch('save_update.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -141,20 +206,16 @@ async function logAndDownload(filename) {
             })
         });
 
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
         const data = await response.json();
 
         if (data.status === 'success' && data.install_url) {
-                window.location.href = data.install_url;
-            } else {
-                location.reload();
-            }
+            window.location.href = data.install_url;
+        } else {
+            location.reload();
+        }
 
     } catch (err) {
-        Swal.fire('Error', 'Download failed: ' + err.message, 'error').then(() => {
-           location.reload(); //  Reload on error too
-        });
+        Swal.fire('Error', err.message, 'error').then(() => location.reload());
     }
 }
 

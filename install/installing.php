@@ -120,56 +120,120 @@ try {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Installing Update</title>
-    <style>
-        body {
-            background: #f2f2f2;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .result-box {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .result-box h2 {
-            margin-bottom: 10px;
-        }
-        .success { color: green; }
-        .error { color: red; }
-        .small {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
-    <div class="result-box">
-        <h2 class="<?= strpos($message, '✅') !== false ? 'success' : 'error' ?>">
-            <?= htmlspecialchars($message) ?>
-        </h2>
-<!-- In HTML -->
-<a href="<?= $baseUrl ?>" style="
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Installing Update - FreePanel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* === GLOBAL === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === CARD === */
+.card {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    border-radius: 24px;
+    backdrop-filter: blur(25px);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    color: white;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+/* === ICON === */
+.icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+/* === TEXT === */
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.success { color: #b6ffb3; }
+.error { color: #ffb3b3; }
+
+.sub-text {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-top: 8px;
+}
+
+/* === BUTTON === */
+.btn {
     display: inline-block;
     margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #fff;
+    color: #333;
+    font-weight: 600;
     text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-">
-    Back to Website
-</a>
+    transition: 0.25s;
+}
 
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* === ANIMATION === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <?php if (strpos($message, '✅') !== false): ?>
+        <div class="icon">🚀</div>
+        <div class="title success">Update Installed Successfully</div>
+    <?php else: ?>
+        <div class="icon">⚠️</div>
+        <div class="title error">Update Failed</div>
+    <?php endif; ?>
+
+    <div class="sub-text">
+        <?= htmlspecialchars($message) ?>
     </div>
+
+    <a href="<?= $baseUrl ?>" class="btn">
+        Go to Dashboard
+    </a>
+
+</div>
+
 </body>
 </html>
