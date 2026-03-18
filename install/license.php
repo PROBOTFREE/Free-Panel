@@ -203,6 +203,24 @@ button:hover {
         </div>
 
         <button type="submit">Validate License</button>
+        
+        <div style="text-align:center; margin-top:15px; font-size:14px; opacity:0.9;">
+            Don't have a license?
+        </div>
+        
+        <a href="https://auth.freepanel.shop/" style="
+            display:block;
+            text-align:center;
+            margin-top:10px;
+            padding:12px;
+            border-radius:10px;
+            background: rgba(255,255,255,0.2);
+            color:white;
+            text-decoration:none;
+            font-weight:500;
+        ">
+            🚀 Get Your License
+        </a>
     </form>
 
     <?php if ($error): ?>

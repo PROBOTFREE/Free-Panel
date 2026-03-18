@@ -4,7 +4,7 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVE
 $host = $_SERVER['HTTP_HOST'];
 $scriptDir = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
 
-$panelURL = $protocol . $host . $scriptDir . '/public';
+$panelURL = $protocol . $host . '/public';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbHost = trim($_POST['db_host']);
