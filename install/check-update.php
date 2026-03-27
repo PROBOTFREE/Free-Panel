@@ -10,7 +10,8 @@ error_reporting(E_ALL);
 $currentVersion = '0.0.0';
 
 $domain = $_SERVER['HTTP_HOST']; // auto gets domain like gamercart.shop
-$panel_id = urlencode($data['panel_id'] ?? '');
+$input = json_decode(file_get_contents("php://input"), true);
+$panel_id = $input['panel_id'] ?? '';
 
 function get_remote_data($url, $domain, $panel_id) {
     $url = $url . "?panel_id=" . urlencode($panel_id);
