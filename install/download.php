@@ -163,7 +163,13 @@ const token = "<?php echo htmlspecialchars($token); ?>";
 
 async function checkLatestVersion() {
     try {
-        const res = await fetch('check-update.php');
+        const res = await fetch('check_update.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                panel_id: encodedPanelId,
+            })
+        });
         const data = await res.json();
 
         if (data.status === 'update_available') {
