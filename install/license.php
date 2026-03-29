@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $token = bin2hex(random_bytes(16));
                 $_SESSION['install_token'] = $token;
 
-                header("Location: download.php?token=$token");
+                header("Location: database.php?token=$token");
                 exit;
             }
 

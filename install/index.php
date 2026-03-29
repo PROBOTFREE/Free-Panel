@@ -1,214 +1,14 @@
-<?php
-
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$host = $_SERVER['HTTP_HOST'];
-$scriptDir = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
-
-$panelURL = $protocol . $host . '/public';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $dbHost = trim($_POST['db_host']);
-    $dbName = trim($_POST['db_name']);
-    $dbUser = trim($_POST['db_user']);
-    $dbPass = trim($_POST['db_pass']);
-
-    // Create conn.php
-    $connContent = "<?php
-
-\$servername = \"$dbHost\";
-\$dbname = \"$dbName\";
-\$username = \"$dbUser\";
-\$password = \"$dbPass\";
-
-\$conn = mysqli_connect(\$servername,\$username,\$password,\$dbname);
-
-if(!\$conn) {
-    die(\" PROBLEM WITH CONNECTION : \" . mysqli_connect_error());
-}
-?>";
-
-    file_put_contents(__DIR__ . '/../conn.php', $connContent);
-    
-// Ensure 'public' folder exists
-    $publicPath = __DIR__ . '/../public';
-    if (!is_dir($publicPath)) {
-        mkdir($publicPath, 0755, true);
-    }
-
-    // Write conn.php in public/
-    file_put_contents($publicPath . '/conn.php', $connContent);
-
-    // Create .env
-    $envContent = <<<ENV
-#--------------------------------------------------------------------
-# Example Environment Configuration file
-#
-# This file can be used as a starting point for your own
-# custom .env files, and contains most of the possible settings
-# available in a default install.
-#
-# By default, all of the settings are commented out. If you want
-# to override the setting, you must un-comment it by removing the '#'
-# at the beginning of the line.
-#--------------------------------------------------------------------
-
-#--------------------------------------------------------------------
-# ENVIRONMENT
-#--------------------------------------------------------------------
-
-CI_ENVIRONMENT = development
-
-#--------------------------------------------------------------------
-# APP
-#--------------------------------------------------------------------
-
-app.baseURL = '{$panelURL}'
-# app.forceGlobalSecureRequests = false
-
-# app.sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler'
-# app.sessionCookieName = 'ci_session'
-# app.sessionExpiration = 7200
-# app.sessionSavePath = NULL
-# app.sessionMatchIP = false
-# app.sessionTimeToUpdate = 300
-# app.sessionRegenerateDestroy = false
-
-# app.CSPEnabled = false
-
-#--------------------------------------------------------------------
-# DATABASE
-#--------------------------------------------------------------------
-
-database.default.hostname = {$dbHost}
-database.default.database = {$dbName}
-database.default.username = {$dbUser}
-database.default.password = {$dbPass}
-database.default.DBDriver = MySQLi
-database.default.DBPrefix =
-
-# database.tests.hostname = localhost
-# database.tests.database = ci4
-# database.tests.username = root
-# database.tests.password = root
-# database.tests.DBDriver = MySQLi
-# database.tests.DBPrefix =
-
-#--------------------------------------------------------------------
-# CONTENT SECURITY POLICY
-#--------------------------------------------------------------------
-
-# contentsecuritypolicy.reportOnly = false
-# contentsecuritypolicy.defaultSrc = 'none'
-# contentsecuritypolicy.scriptSrc = 'self'
-# contentsecuritypolicy.styleSrc = 'self'
-# contentsecuritypolicy.imageSrc = 'self'
-# contentsecuritypolicy.base_uri = null
-# contentsecuritypolicy.childSrc = null
-# contentsecuritypolicy.connectSrc = 'self'
-# contentsecuritypolicy.fontSrc = null
-# contentsecuritypolicy.formAction = null
-# contentsecuritypolicy.frameAncestors = null
-# contentsecuritypolicy.frameSrc = null
-# contentsecuritypolicy.mediaSrc = null
-# contentsecuritypolicy.objectSrc = null
-# contentsecuritypolicy.pluginTypes = null
-# contentsecuritypolicy.reportURI = null
-# contentsecuritypolicy.sandbox = false
-# contentsecuritypolicy.upgradeInsecureRequests = false
-
-#--------------------------------------------------------------------
-# COOKIE
-#--------------------------------------------------------------------
-
-# cookie.prefix = ''
-# cookie.expires = 0
-# cookie.path = '/'
-# cookie.domain = ''
-# cookie.secure = false
-# cookie.httponly = false
-# cookie.samesite = 'Lax'
-# cookie.raw = false
-
-#--------------------------------------------------------------------
-# ENCRYPTION
-#--------------------------------------------------------------------
-
-# encryption.key =
-# encryption.driver = OpenSSL
-# encryption.blockSize = 16
-# encryption.digest = SHA512
-
-#--------------------------------------------------------------------
-# HONEYPOT
-#--------------------------------------------------------------------
-
-# honeypot.hidden = 'true'
-# honeypot.label = 'Fill This Field'
-# honeypot.name = 'honeypot'
-# honeypot.template = '<label>{label}</label><input type="text" name="{name}" value=""/>'
-# honeypot.container = '<div style="display:none">{template}</div>'
-
-#--------------------------------------------------------------------
-# SECURITY
-#--------------------------------------------------------------------
-
-# security.tokenName = 'csrf_token_name'
-# security.headerName = 'X-CSRF-TOKEN'
-# security.cookieName = 'csrf_cookie_name'
-# security.expires = 7200
-# security.regenerate = true
-# security.redirect = true
-# security.samesite = 'Lax'
-
-#--------------------------------------------------------------------
-# LOGGER
-#--------------------------------------------------------------------
-
-# logger.threshold = 4
-
-ENV;
-
-    file_put_contents(__DIR__ . '/../.env', $envContent);
-
-    echo "<div style='padding:20px;font-family:sans-serif'><h3>Setup Complete ✅</h3><p><strong>conn.php</strong> and <strong>.env</strong> have been created.</p></div>";
-    
-    // Show HTML with toast and redirect
-    echo "<!DOCTYPE html>
-    <html>
-    <head>
-        <title>Setup Complete</title>
-        <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
-        <script>
-            setTimeout(function() {
-                window.location.href = 'license.php';
-            }, 2000);
-        </script>
-    </head>
-    <body class='bg-light'>
-        <div class='container mt-5'>
-            <div class='alert alert-success text-center shadow'>
-                ✅ Setup Complete! Redirecting to <strong>license.php</strong> in 2 seconds...
-            </div>
-        </div>
-    </body>
-    </html>";
-    exit;
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install Setup - FreePanel</title>
+<title>Welcome - FreePanel</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-/* === GLOBAL === */
 * {
     margin: 0;
     padding: 0;
@@ -218,67 +18,106 @@ ENV;
 body {
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
     display: flex;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    padding: 20px;
 }
 
-/* === CARD === */
-.install-card {
+/* Card */
+.card {
     width: 100%;
-    max-width: 500px;
-    padding: 40px;
+    max-width: 520px;   /* bigger default */
+    padding: 35px;
     border-radius: 20px;
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(25px) saturate(180%);
     background: rgba(255,255,255,0.12);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     color: white;
-    animation: fadeIn 0.5s ease;
+    text-align: center;
+    animation: fadeIn 0.4s ease;
 }
 
-.install-card h2 {
-    text-align: center;
+@media (min-width: 1440px) {
+    .card {
+        max-width: 700px;
+        padding: 55px;
+    }
+}
+
+/* Desktop enhancement */
+@media (min-width: 1024px) {
+    .card {
+        max-width: 600px;
+        padding: 45px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .card {
+        max-width: 95%;
+        padding: 25px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+
+    .card {
+        max-width: 100%;
+        padding: 20px;
+        border-radius: 16px;
+    }
+}
+
+/* Text */
+.card h2 {
     margin-bottom: 10px;
+    font-size: 22px;
 }
 
-.sub-text {
-    text-align: center;
+.sub {
     font-size: 14px;
     opacity: 0.8;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
-/* === INPUT === */
-.input-group {
+/* Agreement box */
+.agreement {
+    text-align: left;
+    font-size: 13px;
+    background: rgba(255,255,255,0.08);
+    padding: 12px;
+    border-radius: 10px;
+    max-height: 140px;
+    overflow-y: auto;
     margin-bottom: 15px;
 }
 
-.input-group label {
-    font-size: 13px;
-    opacity: 0.8;
-    display: block;
-    margin-bottom: 6px;
+/* Smaller height on mobile */
+@media (max-width: 480px) {
+    .agreement {
+        max-height: 200px;
+    }
 }
 
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
-
-/* === BUTTONS === */
-.button-group {
+/* Checkbox */
+.checkbox {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 15px;
 }
 
+/* Buttons */
 button {
-    flex: 1;
+    width: 100%;
     padding: 12px;
     border-radius: 10px;
     border: none;
@@ -287,79 +126,94 @@ button {
     transition: 0.2s;
 }
 
-.primary-btn {
-    background: #fff;
+.primary {
+    background: white;
     color: #333;
 }
 
-.secondary-btn {
-    background: transparent;
-    color: white;
-    border: 1px solid rgba(255,255,255,0.4);
+.primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 button:hover {
     transform: translateY(-2px);
 }
 
-/* === ANIMATION === */
+/* Animation */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.97);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from {opacity: 0; transform: scale(0.96);}
+    to {opacity: 1; transform: scale(1);}
 }
+
+
+
+/* ===== Custom Scrollbar ===== */
+
+/* Works in Chrome, Edge, Safari */
+.agreement::-webkit-scrollbar {
+    width: 8px;
+}
+
+.agreement::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.agreement::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffffff55, #ffffff22);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.agreement::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ffffffaa, #ffffff55);
+}
+
+/* Firefox */
+.agreement {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
+}
+
+
 </style>
 </head>
 
 <body>
 
-<div class="install-card">
-    <h2>Install Setup</h2>
-    <p class="sub-text">Configure your database to continue</p>
+<div class="card">
+    <h2>Welcome to FreePanel</h2>
+    <p class="sub">Before we begin, please accept the terms</p>
 
-    <form method="post">
+    <div class="agreement">
+        <strong>License Agreement</strong><br><br>
+        By using this panel, you agree that:<br>
+        • You will not misuse the system<br>
+        • You accept all risks<br>
+        • This software is provided "as is"<br>
+        • Redistribution without permission is prohibited<br><br>
 
-        <div class="input-group">
-            <label>Panel URL</label>
-            <input type="text" value="<?php echo $panelURL ?? ''; ?>" readonly>
-        </div>
+        Continue only if you agree to these terms.
+    </div>
 
-        <div class="input-group">
-            <label>Database Host</label>
-            <input type="text" name="db_host" value="localhost" required>
-        </div>
+    <div class="checkbox">
+        <input type="checkbox" id="agree" onchange="toggleBtn()">
+        <label for="agree">I accept the agreement</label>
+    </div>
 
-        <div class="input-group">
-            <label>Database Name</label>
-            <input type="text" name="db_name" required>
-        </div>
-
-        <div class="input-group">
-            <label>Database Username</label>
-            <input type="text" name="db_user" required>
-        </div>
-
-        <div class="input-group">
-            <label>Database Password</label>
-            <input type="password" name="db_pass">
-        </div>
-
-        <div class="button-group">
-            <button type="submit" class="primary-btn">Generate Files</button>
-            <button type="button" class="secondary-btn" onclick="skipSetup()">Skip</button>
-        </div>
-
-    </form>
+    <button id="startBtn" class="primary" disabled onclick="goNext()">
+        🚀 Let's Go
+    </button>
 </div>
 
 <script>
-function skipSetup() {
-    window.location.href = 'license.php';
+function toggleBtn() {
+    document.getElementById('startBtn').disabled = !document.getElementById('agree').checked;
+}
+
+function goNext() {
+    window.location.href = "license.php";
 }
 </script>
 
